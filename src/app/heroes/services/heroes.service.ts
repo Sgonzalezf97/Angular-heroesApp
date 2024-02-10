@@ -17,7 +17,11 @@ export class HeroesService {
   getHeroById(id: string):Observable<Hero | undefined>{
     return this.http.get<Hero>(`${this.baseUrl}/heroes/${id}`)
     .pipe(
-      catchError(error => of(undefined)) //se pone el of para volver el undefined un observable
+      catchError(error => of(undefined)) //se pone el of para volver el undefined un observable .
     )
+  }
+
+  getSuggestions(query:string): Observable<Hero[]> {
+    return this.http.get<Hero[]>(`${this.baseUrl}/heroes?q=${query}&_limit=6`);
   }
 }
