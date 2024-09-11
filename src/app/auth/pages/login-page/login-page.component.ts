@@ -13,6 +13,7 @@ export class LoginPageComponent {
     private authService: AuthService,
     private router:Router
     ){}
+
   onLogin():void{
     this.authService.login('Juan@gmail.com','123456')
     .subscribe(user => {

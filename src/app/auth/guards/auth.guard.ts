@@ -54,27 +54,50 @@ import {
   CanActivateFn,
   CanMatchFn,
   Route,
+  Router,
   RouterStateSnapshot,
   UrlSegment,
 } from '@angular/router';
 
-//No hay necesidad de crear una clase, simplemente definiendo una función flecha y exportándola podemos utilizar sus funcionalidades de guard en el app-routing
-export const canActivateGuard: CanActivateFn = ( //Hay que tener en cuenta el tipado CanActiveFn
-  route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot
-) => {
-  console.log('CanActivate');
-  console.log({ route, state });
+import { inject } from '@angular/core';
+import { Observable,tap } from 'rxjs';
+import { AuthService } from '../services/auth.service';
 
-  return false;
+const checkAuthStatus = (): Observable<boolean> => {
+
+  const authService: AuthService = inject(AuthService);
+  const router: Router = inject(Router);
+
+  return authService.checkAuth().pipe(
+    tap((isAuthenticated) => console.log('Authenticated:',isAuthenticated)),
+    tap((isAuthenticated) => {
+      if (!isAuthenticated) {
+        router.navigate(['./auth/login']);
+      }
+    })
+  );
+
 };
 
 export const canMatchGuard: CanMatchFn = ( //Tipado CanMatchFN
   route: Route,
   segments: UrlSegment[]
 ) => {
-  console.log('CanMatch');
-  console.log({ route, segments });
+  // console.log('CanMatch');
+  // console.log({ route, segments });
 
-  return false;
+  return checkAuthStatus();
 };
+
+//No hay necesidad de crear una clase, simplemente definiendo una función flecha y exportándola podemos utilizar sus funcionalidades de guard en el app-routing
+export const canActivateGuard: CanActivateFn = ( //Hay que tener en cuenta el tipado CanActiveFn
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+) => {
+  // console.log('CanActivate');
+  // console.log({ route, state });
+
+  return checkAuthStatus();
+};
+
+
