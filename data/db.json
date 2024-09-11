@@ -2,8 +2,8 @@
   "users": [
     {
       "id": 1,
-      "user": "John Doe",
-      "email": "john.due@gmail.com"
+      "user": "Juan",
+      "email": "Juan@gmail.com"
     }
   ],
   "heroes": [
